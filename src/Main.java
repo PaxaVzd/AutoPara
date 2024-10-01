@@ -2,7 +2,6 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        // Виведення надпису "U Z H N U - F I T"
         printUZHNUFIT();
 
         ScheduleManager scheduleManager = new ScheduleManager();
@@ -17,39 +16,19 @@ public class Main {
             System.out.println("5. Підключитися до пари");
             System.out.println("6. Вихід");
             System.out.print("Виберіть опцію: ");
-            int choice = scanner.nextInt();
-            scanner.nextLine(); // очищення буфера
+
+            int choice = getIntInput(scanner);
+            if (choice == 0) continue;
 
             switch (choice) {
                 case 1:
-                    System.out.print("Введіть назву дисципліни: ");
-                    String subject = scanner.nextLine();
-                    System.out.print("Введіть ПІБ викладача: ");
-                    String teacher = scanner.nextLine();
-                    System.out.print("Введіть посилання на Meet: ");
-                    String meetLink = scanner.nextLine();
-                    System.out.print("Введіть день: ");
-                    String day = scanner.nextLine();
-                    scheduleManager.addPair(new Pair(subject, teacher, meetLink, day));
+                    addPair(scanner, scheduleManager);
                     break;
                 case 2:
-                    System.out.print("Введіть номер пари для видалення: ");
-                    int removeIndex = scanner.nextInt() - 1;
-                    scheduleManager.removePair(removeIndex);
+                    removePair(scanner, scheduleManager);
                     break;
                 case 3:
-                    System.out.print("Введіть номер пари для редагування: ");
-                    int editIndex = scanner.nextInt() - 1;
-                    scanner.nextLine(); // очищення буфера
-                    System.out.print("Введіть нову назву дисципліни: ");
-                    String newSubject = scanner.nextLine();
-                    System.out.print("Введіть новий ПІБ викладача: ");
-                    String newTeacher = scanner.nextLine();
-                    System.out.print("Введіть нове посилання на Meet: ");
-                    String newMeetLink = scanner.nextLine();
-                    System.out.print("Введіть новий день: ");
-                    String newDay = scanner.nextLine();
-                    scheduleManager.editPair(editIndex, new Pair(newSubject, newTeacher, newMeetLink, newDay));
+                    editPair(scanner, scheduleManager);
                     break;
                 case 4:
                     scheduleManager.displaySchedule();
@@ -64,6 +43,76 @@ public class Main {
                     System.out.println("Невірний вибір, спробуйте ще раз.");
             }
         }
+    }
+
+    private static int getIntInput(Scanner scanner) {
+        while (true) {
+            try {
+                String input = scanner.nextLine();
+                if (input.equals("0")) {
+                    return 0;
+                }
+                return Integer.parseInt(input);
+            } catch (NumberFormatException e) {
+                System.out.print("Невірний ввід. Будь ласка, введіть число (0 для повернення): ");
+            }
+        }
+    }
+
+    private static void addPair(Scanner scanner, ScheduleManager scheduleManager) {
+        System.out.print("Введіть назву дисципліни (0 для повернення): ");
+        String subject = scanner.nextLine();
+        if (subject.equals("0")) return;
+
+        System.out.print("Введіть ПІБ викладача (0 для повернення): ");
+        String teacher = scanner.nextLine();
+        if (teacher.equals("0")) return;
+
+        System.out.print("Введіть посилання на Meet (0 для повернення): ");
+        String meetLink = scanner.nextLine();
+        if (meetLink.equals("0")) return;
+
+        System.out.print("Введіть день (натисніть Enter, щоб пропустити): ");
+        String day = scanner.nextLine();
+        if (day.isEmpty()) {
+            day = "Не вказано";
+        }
+
+        scheduleManager.addPair(new Pair(subject, teacher, meetLink, day));
+    }
+
+    private static void removePair(Scanner scanner, ScheduleManager scheduleManager) {
+        System.out.print("Введіть номер пари для видалення (0 для повернення): ");
+        int removeIndex = getIntInput(scanner);
+        if (removeIndex == 0) return;
+
+        scheduleManager.removePair(removeIndex - 1);
+    }
+
+    private static void editPair(Scanner scanner, ScheduleManager scheduleManager) {
+        System.out.print("Введіть номер пари для редагування (0 для повернення): ");
+        int editIndex = getIntInput(scanner);
+        if (editIndex == 0) return;
+
+        System.out.print("Введіть нову назву дисципліни (0 для повернення): ");
+        String newSubject = scanner.nextLine();
+        if (newSubject.equals("0")) return;
+
+        System.out.print("Введіть новий ПІБ викладача (0 для повернення): ");
+        String newTeacher = scanner.nextLine();
+        if (newTeacher.equals("0")) return;
+
+        System.out.print("Введіть нове посилання на Meet (0 для повернення): ");
+        String newMeetLink = scanner.nextLine();
+        if (newMeetLink.equals("0")) return;
+
+        System.out.print("Введіть новий день (натисніть Enter, щоб пропустити): ");
+        String newDay = scanner.nextLine();
+        if (newDay.isEmpty()) {
+            newDay = "Не вказано";
+        }
+
+        scheduleManager.editPair(editIndex - 1, new Pair(newSubject, newTeacher, newMeetLink, newDay));
     }
 
     private static void printUZHNUFIT() {
